@@ -101,7 +101,13 @@ export class PullRequestComponent {
                 class: "failed"
             });
         }
-
+        if (this.pullRequest.unresolvedComments > 0){
+            tags.push({
+                name: this.pullRequest.unresolvedComments.toString() + " Unresolved Comments",
+                description: "There are unresolved comments",
+                class: "failed"
+            });
+        }
         if (this.pullRequest.statuses) {
             const uniqueStatuses = new Map<string, GitPullRequestStatus>();
 
