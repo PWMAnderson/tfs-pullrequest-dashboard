@@ -1857,6 +1857,7 @@ interface GitPullRequest {
     supportsIterations: boolean;
     targetRefName: string;
     title: string;
+    unresolvedComments: number;
     url: string;
     workItemRefs: ResourceRef[];
 }

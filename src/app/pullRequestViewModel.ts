@@ -32,6 +32,8 @@ export class PullRequestViewModel {
 
     public autoComplete: boolean = false;
 
+    public unresolvedComments: number;
+
     public reviewers: IdentityRefWithVote[];
 
     public statuses: GitPullRequestStatus[];
@@ -62,6 +64,7 @@ export class PullRequestViewModel {
         this.sourceRefName = pullRequest.sourceRefName.replace("refs/heads/", "");
         this.targetRefName = pullRequest.targetRefName.replace("refs/heads/", "");
         this.hasMergeConflicts = pullRequest.mergeStatus === PullRequestAsyncStatus.Conflicts;
+        this.unresolvedComments = pullRequest.unresolvedComments;
         this.reviewers = reviewers.sort((a: IdentityRefWithVote, b: IdentityRefWithVote) => {
                 if (a.isRequired && !b.isRequired) {
                     return -1;

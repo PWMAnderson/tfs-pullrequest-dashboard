@@ -104,8 +104,8 @@ export class RestfulTfsService extends TfsService {
 
     private getPullRequestComplete(pullRequest: GitPullRequest): Observable<GitPullRequest> {
         const url = `${this.baseUri}/_apis/git/repositories/${pullRequest.repository.id}/pullRequests/${pullRequest.pullRequestId}`;
-        return this.http.get(url, {withCredentials: true})
-            .map((r: Response) => r.json());
+        var pr = this.http.get(url, {withCredentials: true}).map((r: Response) => r.json());
+        return pr.map((pr) => this.getPullRequestUnresolvedComments(pr));
     }
 
     private getPullRequestWithStatuses(pullRequest: GitPullRequest): Observable<GitPullRequestWithStatuses> {
@@ -129,6 +129,19 @@ export class RestfulTfsService extends TfsService {
                 Object.assign(res, pullRequest);
                 return res;
             });
+    }
+
+    private getPullRequestUnresolvedComments(pullRequest: GitPullRequest): GitPullRequest {
+        const url = `${this.baseUri}/_apis/git/repositories/${pullRequest.repository.id}/pullRequests/${pullRequest.pullRequestId}/threads`;
+        const threads: any = this.http.get(url, {withCredentials: true}).map((r: Response) => r.json());
+        var totalUnresolved = 0;
+        for (const thread of threads){
+            if (thread.status == "active"){
+                totalUnresolved++;
+            }
+        }
+        pullRequest.unresolvedComments = totalUnresolved;
+        return pullRequest;
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {
